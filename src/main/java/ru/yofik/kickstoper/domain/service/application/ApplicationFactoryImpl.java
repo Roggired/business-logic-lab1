@@ -16,7 +16,6 @@ import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Date;
 
 /**
  * Creates an Application instance from ApplicationDto with an initial id equal to 0 and an application status NEW.
