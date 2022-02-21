@@ -1,9 +1,6 @@
 package ru.yofik.kickstoper.domain.entity.subcategory;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.yofik.kickstoper.domain.entity.category.Category;
 
 import javax.persistence.*;
@@ -14,6 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "subcategory")
+@ToString
 public class Subcategory {
     @Id
     @GeneratedValue(generator = "subcategory_seq", strategy = GenerationType.SEQUENCE)

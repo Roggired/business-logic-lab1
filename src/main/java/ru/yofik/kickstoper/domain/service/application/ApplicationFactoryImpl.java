@@ -13,7 +13,10 @@ import ru.yofik.kickstoper.domain.service.category.CategoryService;
 import ru.yofik.kickstoper.domain.service.subcategory.SubcategoryService;
 
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 /**
  * Creates an Application instance from ApplicationDto with an initial id equal to 0 and an application status NEW.
@@ -35,10 +38,10 @@ public class ApplicationFactoryImpl implements ApplicationFactory {
     public @NotNull Application createApplication(ApplicationDto applicationDto) {
         Category category = categoryService.getById(applicationDto.getCategoryId());
         Subcategory subcategory = subcategoryService.getById(applicationDto.getSubcategoryId());
-        ZonedDateTime projectEndDate = ZonedDateTime.parse(applicationDto.getProjectEndDate());
-
+        ZonedDateTime projectEndDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(applicationDto.getProjectEndDate()), ZoneId.systemDefault());
+        log.info(applicationDto.getProjectEndDate());
         if (projectEndDate.isBefore(ZonedDateTime.now())) {
-            log.warn("Project end date in applicationDto has to be after the current date.");
+            log.warn("Project end date " + projectEndDate + " in applicationDto has to be after the current date " + ZonedDateTime.now());
             throw new ProjectEndDateIsBeforeNowException();
         }
 

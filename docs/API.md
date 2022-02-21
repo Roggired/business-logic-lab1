@@ -10,7 +10,7 @@ BODY:
 "subcategoryId": 1,  
 "shortDescription": "Test test test",  
 "targetBudget": 1000,  
-"projectEndDate": "2022-03-10T0:0:0+03:00"  
+"projectEndDate": 1645553175  
 }
 RESPONSE:  
 4001 - project with such name already exists  

@@ -69,7 +69,7 @@ public class Application {
                 subcategory.getId(),
                 shortDescription,
                 targetBudget,
-                projectEndDate.toString()
+                projectEndDate.toInstant().toEpochMilli()
         );
     }
 }

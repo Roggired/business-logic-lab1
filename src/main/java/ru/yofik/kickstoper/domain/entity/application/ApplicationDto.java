@@ -28,6 +28,6 @@ public class ApplicationDto {
     private String shortDescription;
     @Positive
     private long targetBudget;
-    @NotBlank
-    private String projectEndDate;
+    @Positive
+    private long projectEndDate;
 }
