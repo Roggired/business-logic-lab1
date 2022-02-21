@@ -22,7 +22,7 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     @Override
     public Subcategory getById(int id) {
         if (!isExist(id)) {
-            log.warn(() -> "Subcategory with id: " +  id + " doesn't exist");
+            log.warn(() -> "Subcategory with id: " +  id + " does not exist");
             throw new RequestedElementNotExistException("Subcategory with id: " + id + " doesn't exist");
         }
 

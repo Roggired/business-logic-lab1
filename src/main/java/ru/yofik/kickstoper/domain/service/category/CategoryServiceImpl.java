@@ -22,7 +22,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category getById(int id) {
         if (!isExist(id)) {
-            log.warn(() -> "Category with id: " + id + " doesn't exist");
+            log.warn(() -> "Category with id: " + id + " does not exist");
             throw new RequestedElementNotExistException("Category with id: " +  id + " doesn't exist");
         }
 
