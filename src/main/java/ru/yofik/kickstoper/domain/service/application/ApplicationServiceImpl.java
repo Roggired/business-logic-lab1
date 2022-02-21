@@ -7,7 +7,11 @@ import org.springframework.validation.annotation.Validated;
 import ru.yofik.kickstoper.api.exceptions.ProjectNameIsNotFreeException;
 import ru.yofik.kickstoper.domain.entity.application.Application;
 import ru.yofik.kickstoper.domain.entity.application.ApplicationDto;
+import ru.yofik.kickstoper.domain.entity.application.ApplicationShortView;
 import ru.yofik.kickstoper.storage.sql.application.ApplicationRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -31,6 +35,21 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         log.info(() -> "An application with id: " + newApplicationId + " has been created");
         return newApplicationId;
+    }
+
+    @Override
+    public List<ApplicationShortView> getAllApplications() {
+        List<Application> applications = applicationRepository.findAll();
+        log.info("All applications has been obtained");
+        return applications.stream()
+                .map(application -> new ApplicationShortView(
+                        application.getId(),
+                        application.getApplicationStatus().toString(),
+                        application.getProjectName(),
+                        application.getCategory().getName(),
+                        application.getSubcategory().getName()
+                ))
+                .collect(Collectors.toList());
     }
 
     private boolean projectNameIsFree(ApplicationDto applicationDto) {
