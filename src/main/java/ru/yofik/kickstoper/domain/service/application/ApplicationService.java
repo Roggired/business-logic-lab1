@@ -13,7 +13,10 @@ import javax.validation.constraints.NotNull;
 @Service
 public interface ApplicationService {
     boolean isExists(int id);
+
     int createApplication(@Validated ApplicationDto applicationDto);
     void updateApplicationStatus(int id, @Validated ApplicationResource.StatusDto statusDto);
+
     List<ApplicationShortView> getAllApplications();
+    ApplicationShortView getConcreteApplication(int id);
 }

@@ -60,14 +60,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         List<Application> applications = applicationRepository.findAll();
         log.info("All applications has been obtained");
         return applications.stream()
-                .map(application -> new ApplicationShortView(
-                        application.getId(),
-                        application.getApplicationStatus().toString(),
-                        application.getProjectName(),
-                        application.getCategory().getName(),
-                        application.getSubcategory().getName()
-                ))
+                .map(ApplicationShortView::fromApplication)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public ApplicationShortView getConcreteApplication(int id) {
+         return ApplicationShortView.fromApplication(applicationRepository.getById(id));
     }
 
     private boolean projectNameIsFree(ApplicationDto applicationDto) {
