@@ -7,23 +7,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.yofik.kickstoper.domain.entity.application.ApplicationDto;
+import ru.yofik.kickstoper.domain.entity.application.ApplicationShortView;
 import ru.yofik.kickstoper.domain.service.application.ApplicationService;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 @RestController
 @RequestMapping(
         value = "/api/v1/application",
-        produces = MediaType.APPLICATION_JSON_VALUE,
-        consumes = MediaType.APPLICATION_JSON_VALUE
+        produces = MediaType.APPLICATION_JSON_VALUE
 )
 public class ApplicationResource {
     @Autowired
     private ApplicationService applicationService;
 
 
-    @PostMapping("")
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public int createApplication(@RequestBody ApplicationDto applicationDto) {
         return applicationService.createApplication(applicationDto);
     }
@@ -40,7 +40,11 @@ public class ApplicationResource {
         @Pattern(regexp = "(NEW|WAIT_FOR_APPROVE|APPROVED|CANCELED)",
                 message = "Статус должен удовлетворять спецификации")
         private String status;
+    }
 
 
+    @GetMapping("")
+    public List<ApplicationShortView> getUserApplications() {
+        return applicationService.getAllApplications();
     }
 }

@@ -1,5 +1,6 @@
 package ru.yofik.kickstoper.domain.entity.subcategory;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import ru.yofik.kickstoper.domain.entity.category.Category;
 
@@ -22,5 +23,6 @@ public class Subcategory {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
+    @JsonIgnore
     private Category category;
 }

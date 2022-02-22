@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.yofik.kickstoper.domain.entity.category.Category;
 import ru.yofik.kickstoper.domain.entity.subcategory.Subcategory;
-import ru.yofik.kickstoper.domain.entity.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.Future;

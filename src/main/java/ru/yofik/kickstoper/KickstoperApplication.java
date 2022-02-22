@@ -8,13 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import ru.yofik.kickstoper.domain.entity.category.Category;
 import ru.yofik.kickstoper.domain.entity.subcategory.Subcategory;
-import ru.yofik.kickstoper.domain.service.subcategory.SubcategoryService;
 import ru.yofik.kickstoper.storage.sql.category.CategoryRepository;
 import ru.yofik.kickstoper.storage.sql.subcategory.SubcategoryRepository;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @SpringBootApplication

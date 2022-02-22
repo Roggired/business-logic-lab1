@@ -1,5 +1,7 @@
 package ru.yofik.kickstoper.domain.entity.category;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.gson.annotations.Expose;
 import lombok.*;
 import ru.yofik.kickstoper.domain.entity.subcategory.Subcategory;
 
@@ -22,6 +24,7 @@ public class Category {
     private String name;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private List<Subcategory> subcategories;
 
 
