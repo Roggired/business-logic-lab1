@@ -10,5 +10,5 @@ import java.util.List;
 public interface CategoryService {
     boolean isExist(int id);
     @NotNull Category getById(int id);
-    @NotNull List<Category> getAllCategories();
+    @NotNull List<Category> getAll();
 }

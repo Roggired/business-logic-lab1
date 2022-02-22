@@ -22,7 +22,7 @@ public class CategoryResource {
 
     @GetMapping("")
     public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+        return categoryService.getAll();
     }
 
     @GetMapping("/{id}")
