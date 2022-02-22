@@ -5,8 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.yofik.kickstoper.api.exceptions.ProjectNameIsNotFreeException;
+import ru.yofik.kickstoper.api.exceptions.RequestedElementNotExistException;
+import ru.yofik.kickstoper.api.resources.ApplicationResource;
 import ru.yofik.kickstoper.domain.entity.application.Application;
 import ru.yofik.kickstoper.domain.entity.application.ApplicationDto;
+import ru.yofik.kickstoper.domain.entity.application.ApplicationStatus;
 import ru.yofik.kickstoper.storage.sql.application.ApplicationRepository;
 
 @Service
@@ -20,6 +23,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 
     @Override
+    public boolean isExists(int id) {
+        return applicationRepository.existsById(id);
+    }
+
+    @Override
     public int createApplication(@Validated ApplicationDto applicationDto) {
         if (!projectNameIsFree(applicationDto)) {
             log.warn(() -> "Project name: " + applicationDto.getProjectName() + " is already in use");
@@ -31,6 +39,18 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         log.info(() -> "An application with id: " + newApplicationId + " has been created");
         return newApplicationId;
+    }
+
+    @Override
+    public void updateApplicationStatus(int id, ApplicationResource.StatusDto statusDto) {
+        if (!isExists(id)) {
+            log.warn(() -> "Project id: " + id + " doesn't exist");
+            throw new RequestedElementNotExistException();
+        }
+
+        int indexedStatus = ApplicationStatus.valueOf(statusDto.getStatus()).ordinal();
+        int result = applicationRepository.updateStatus(id, ApplicationStatus.valueOf(statusDto.getStatus()));
+        log.info(() -> "Result is" + result);
     }
 
     private boolean projectNameIsFree(ApplicationDto applicationDto) {
