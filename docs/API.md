@@ -17,3 +17,19 @@ RESPONSE:
 4002 - project end date is before the current date  
 4004 - category or subcategory cannot be found  
 5000 - internal server error
+
+----
+
+GET /api/v1/application - get all applications.
+RESPONSE: list of  
+{  
+"id": 1,  
+"applicationStatus": "NEW",  
+"projectName": "Test",  
+"category": "Video Game",  
+"subcategory": "rpg"  
+}  
+RESPONSE:
+5000 - internal server error
+
+----
