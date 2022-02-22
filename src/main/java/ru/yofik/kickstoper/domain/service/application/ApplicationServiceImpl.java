@@ -48,9 +48,8 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new RequestedElementNotExistException();
         }
 
-        int indexedStatus = ApplicationStatus.valueOf(statusDto.getStatus()).ordinal();
         int result = applicationRepository.updateStatus(id, ApplicationStatus.valueOf(statusDto.getStatus()));
-        log.info(() -> "Result is" + result);
+        log.info(() -> "Result of updated rows is " + result);
     }
 
     private boolean projectNameIsFree(ApplicationDto applicationDto) {
