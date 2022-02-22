@@ -16,6 +16,7 @@ public interface ApplicationService {
 
     int createApplication(@Validated ApplicationDto applicationDto);
     void updateApplicationStatus(int id, @Validated ApplicationResource.StatusDto statusDto);
+    void startApplication(int id);
 
     List<ApplicationShortView> getAllApplications();
     ApplicationShortView getConcreteApplication(int id);

@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import ru.yofik.kickstoper.api.exceptions.ApplicationStatusNotSuitable;
 import ru.yofik.kickstoper.api.exceptions.ProjectNameIsNotFreeException;
 import ru.yofik.kickstoper.api.exceptions.RequestedElementNotExistException;
 import ru.yofik.kickstoper.api.resources.ApplicationResource;
@@ -53,6 +54,19 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
 
         int result = applicationRepository.updateStatus(id, ApplicationStatus.valueOf(statusDto.getStatus()));
+        log.info(() -> "Result of updated rows is " + result);
+    }
+
+    @Override
+    public void startApplication(int id) {
+        Application application = applicationRepository.getById(id);
+
+        if (application.getApplicationStatus() != ApplicationStatus.APPROVED) {
+            log.warn(() -> "Not approved project " + application.getProjectName() + " tried to be started");
+            throw new ApplicationStatusNotSuitable();
+        }
+
+        int result = applicationRepository.updateStatus(id, ApplicationStatus.STARTED);
         log.info(() -> "Result of updated rows is " + result);
     }
 

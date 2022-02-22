@@ -44,6 +44,12 @@ public class ApplicationResource {
         return applicationService.getConcreteApplication(id);
     }
 
+    // TODO not sure about url
+    @GetMapping(value = "/start/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void startApplication(@PathVariable int id) {
+        applicationService.startApplication(id);
+    }
+
     @Getter
     @Setter
     @NoArgsConstructor
