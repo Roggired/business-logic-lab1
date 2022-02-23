@@ -4,14 +4,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.yofik.kickstoper.domain.entity.application.ApplicationDto;
 import ru.yofik.kickstoper.domain.entity.application.ApplicationShortView;
+import ru.yofik.kickstoper.domain.entity.application.FinanceData;
+import ru.yofik.kickstoper.domain.entity.applicationFile.ApplicationFile;
 import ru.yofik.kickstoper.domain.service.application.ApplicationService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -44,7 +50,6 @@ public class ApplicationResource {
         return applicationService.getApplication(id);
     }
 
-    // TODO not sure about url
     @PutMapping(value = "/{id}/start", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void startApplication(@PathVariable int id) {
         applicationService.startApplication(id);
@@ -57,5 +62,52 @@ public class ApplicationResource {
         @Pattern(regexp = "(NEW|WAIT_FOR_APPROVE|APPROVED|CANCELED)",
                 message = "Статус должен удовлетворять спецификации")
         private String status;
+    }
+
+    @PutMapping(value = "/{id}/finances", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void updateFinanceData(@PathVariable int id, @RequestBody FinanceData financeData) {
+        applicationService.updateFinanceData(financeData, id);
+    }
+
+    @GetMapping(value = "/{id}/finances")
+    public FinanceData getFinanceData(@PathVariable int id) {
+        return applicationService.getFinanceData(id);
+    }
+
+    @PutMapping(value = "/{id}/video", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadVideo(@PathVariable int id, MultipartFile multipartFile) {
+        try {
+            applicationService.uploadVideo(
+                    new ApplicationFile(
+                            multipartFile.getName() + "-application-video-" + id,
+                            multipartFile.getBytes()
+                    ),
+                    id
+            );
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping(value = "/{id}/description", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadDescription(@PathVariable int id, @RequestParam("file") MultipartFile multipartFile) {
+        try {
+            applicationService.uploadDescription(
+                    new ApplicationFile(
+                            multipartFile.getName() + "-application-description-" + id,
+                            multipartFile.getBytes()
+                    ),
+                    id
+            );
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/{id}/description")
+    public String getDescription(@PathVariable int id) {
+        return applicationService.getDescription(id);
     }
 }

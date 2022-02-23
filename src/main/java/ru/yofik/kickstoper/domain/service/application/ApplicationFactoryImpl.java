@@ -52,7 +52,10 @@ public class ApplicationFactoryImpl implements ApplicationFactory {
                 subcategory,
                 applicationDto.getShortDescription(),
                 applicationDto.getTargetBudget(),
-                projectEndDate
+                projectEndDate,
+                null,
+                null,
+                null
         );
     }
 }
