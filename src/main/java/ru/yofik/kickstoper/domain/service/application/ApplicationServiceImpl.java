@@ -4,10 +4,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import ru.yofik.kickstoper.api.exceptions.ApplicationStatusNotSuitable;
+import ru.yofik.kickstoper.api.exceptions.ApplicationStatusNotSuitableException;
 import ru.yofik.kickstoper.api.exceptions.ProjectNameIsNotFreeException;
 import ru.yofik.kickstoper.api.exceptions.RequestedElementNotExistException;
-import ru.yofik.kickstoper.api.resources.ApplicationResource;
 import ru.yofik.kickstoper.domain.entity.application.Application;
 import ru.yofik.kickstoper.domain.entity.application.ApplicationDto;
 import ru.yofik.kickstoper.domain.entity.application.ApplicationStatus;
@@ -47,23 +46,28 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public void updateApplicationStatus(int id, ApplicationResource.StatusDto statusDto) {
+    public void updateApplicationStatus(int id, String status) {
         if (!isExists(id)) {
             log.warn(() -> "Project id: " + id + " doesn't exist");
             throw new RequestedElementNotExistException();
         }
 
-        int result = applicationRepository.updateStatus(id, ApplicationStatus.valueOf(statusDto.getStatus()));
+        int result = applicationRepository.updateStatus(id, ApplicationStatus.valueOf(status));
         log.info(() -> "Result of updated rows is " + result);
     }
 
     @Override
     public void startApplication(int id) {
+        if (!isExists(id)) {
+            log.warn(() -> "Project id: " + id + " doesn't exist");
+            throw new RequestedElementNotExistException();
+        }
+
         Application application = applicationRepository.getById(id);
 
         if (application.getApplicationStatus() != ApplicationStatus.APPROVED) {
             log.warn(() -> "Not approved project " + application.getProjectName() + " tried to be started");
-            throw new ApplicationStatusNotSuitable();
+            throw new ApplicationStatusNotSuitableException();
         }
 
         int result = applicationRepository.updateStatus(id, ApplicationStatus.STARTED);
@@ -79,7 +83,12 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public ApplicationShortView getConcreteApplication(int id) {
+    public ApplicationShortView getApplication(int id) {
+        if (!isExists(id)) {
+            log.warn(() -> "Project id: " + id + " doesn't exist");
+            throw new RequestedElementNotExistException();
+        }
+
          return ApplicationShortView.fromApplication(applicationRepository.getById(id));
     }
 

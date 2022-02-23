@@ -1,8 +1,8 @@
 package ru.yofik.kickstoper.api.exceptions;
 
-public class ApplicationStatusNotSuitable extends ResponseOnException {
+public class ApplicationStatusNotSuitableException extends ResponseOnException {
 
-    public ApplicationStatusNotSuitable() {
+    public ApplicationStatusNotSuitableException() {
         super(ResponseCode.APPLICATION_STATUS_NOT_SUITABLE, "Application status is not suitavle in this case");
     }
 }

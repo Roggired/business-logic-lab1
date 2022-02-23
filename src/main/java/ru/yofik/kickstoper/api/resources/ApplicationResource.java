@@ -6,11 +6,11 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ru.yofik.kickstoper.domain.entity.application.Application;
 import ru.yofik.kickstoper.domain.entity.application.ApplicationDto;
 import ru.yofik.kickstoper.domain.entity.application.ApplicationShortView;
 import ru.yofik.kickstoper.domain.service.application.ApplicationService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import java.util.List;
 
@@ -30,8 +30,8 @@ public class ApplicationResource {
     }
 
     @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void updateApplicationStatus(@PathVariable int id, @RequestBody StatusDto statusDto) {
-        applicationService.updateApplicationStatus(id, statusDto);
+    public void updateApplicationStatus(@PathVariable int id, @RequestBody @Valid StatusDto statusDto) {
+        applicationService.updateApplicationStatus(id, statusDto.status);
     }
 
     @GetMapping("")
@@ -41,11 +41,11 @@ public class ApplicationResource {
 
     @GetMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ApplicationShortView getConcreteApplication(@PathVariable int id) {
-        return applicationService.getConcreteApplication(id);
+        return applicationService.getApplication(id);
     }
 
     // TODO not sure about url
-    @GetMapping(value = "/start/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}/start", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void startApplication(@PathVariable int id) {
         applicationService.startApplication(id);
     }
