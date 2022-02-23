@@ -2,22 +2,25 @@ package ru.yofik.kickstoper;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.util.unit.DataSize;
 import ru.yofik.kickstoper.domain.entity.category.Category;
 import ru.yofik.kickstoper.domain.entity.subcategory.Subcategory;
 import ru.yofik.kickstoper.storage.sql.category.CategoryRepository;
 import ru.yofik.kickstoper.storage.sql.subcategory.SubcategoryRepository;
 
+import javax.servlet.MultipartConfigElement;
 import java.util.Arrays;
 import java.util.List;
 
 @SpringBootApplication
 @Log4j2
 public class KickstoperApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(KickstoperApplication.class, args);
 	}
@@ -53,5 +56,16 @@ public class KickstoperApplication {
 			List<Subcategory> createdSubcategories = subcategoryRepository.saveAll(subcategories);
 			log.info("Subcategories has been created: " + createdSubcategories);
 		};
+	}
+
+	@Value("${local.files.maxFileSize}")
+	private int maxFileSize;
+
+	@Bean
+	public MultipartConfigElement provideMultipartConfig() {
+		MultipartConfigFactory factory = new MultipartConfigFactory();
+		factory.setMaxFileSize(DataSize.ofMegabytes(maxFileSize));
+		factory.setMaxRequestSize(DataSize.ofMegabytes(maxFileSize));
+		return factory.createMultipartConfig();
 	}
 }

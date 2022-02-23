@@ -76,4 +76,9 @@ public class ApplicationResource {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping(value = "/{id}/description")
+    public String getDescription(@PathVariable int id) {
+        return applicationService.getDescription(id);
+    }
 }

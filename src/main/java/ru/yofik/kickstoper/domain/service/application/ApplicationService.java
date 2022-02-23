@@ -17,4 +17,5 @@ public interface ApplicationService {
     FinanceData getFinanceData(int applicationId);
     void uploadVideo(ApplicationFile applicationFile, int applicationId);
     void uploadDescription(ApplicationFile applicationFile, int applicationId);
+    String getDescription(int applicationId);
 }

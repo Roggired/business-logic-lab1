@@ -140,6 +140,22 @@ public class ApplicationServiceImpl implements ApplicationService {
         log.info(() -> "New description filename has been written to db for application: " + applicationId);
     }
 
+    @Override
+    public String getDescription(int applicationId) {
+        Application application = getApplication(applicationId);
+        log.info(() -> "Application with id: " + applicationId + " has been obtained");
+
+        if (application.getDescriptionFilename() == null) {
+            log.warn(() -> "Application with id: " + applicationId + " does not have a description filename");
+            throw new RequestedElementNotExistException();
+        }
+
+        byte[] data = applicationFileRepository.get(application.getDescriptionFilename());
+        log.info(() -> "File with description: " + application.getDescriptionFilename() + " has been read");
+
+        return new String(data, StandardCharsets.UTF_8);
+    }
+
     private @NotNull Application getApplication(int id) {
         return applicationRepository.findById(id)
                 .orElseThrow(() -> {
@@ -153,14 +169,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     private String hashFilename(String filename) {
-//        try {
-            Base64.Encoder encoder = Base64.getEncoder();
-            return encoder.encodeToString(filename.getBytes(StandardCharsets.UTF_8));
-//            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-//            return new String(messageDigest.digest(filename.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
-//        } catch (NoSuchAlgorithmException e) {
-//            log.fatal(() -> "Cannot find SHA-256 Message Digest", e);
-//            throw new InternalServerException();
-//        }
+        Base64.Encoder encoder = Base64.getEncoder();
+        return encoder.encodeToString(filename.getBytes(StandardCharsets.UTF_8));
     }
 }

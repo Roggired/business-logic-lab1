@@ -8,9 +8,7 @@ import org.springframework.stereotype.Repository;
 import ru.yofik.kickstoper.api.exceptions.InternalServerException;
 import ru.yofik.kickstoper.domain.entity.applicationFile.ApplicationFile;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -19,6 +17,9 @@ import java.nio.file.Path;
 public class LocalApplicationFileRepository implements ApplicationFileRepository {
     @Value("${local.files.directory}")
     private String pathToDirectory;
+
+    @Value("${local.files.maxFileSize}")
+    private int maxFileSize;
 
     @Autowired
     private TaskExecutor taskExecutor;
@@ -49,6 +50,38 @@ public class LocalApplicationFileRepository implements ApplicationFileRepository
         log.info(() -> "Target path for file: " + filePath + " is resolved");
 
         deleteIfExists(filePath);
+    }
+
+    @Override
+    public byte[] get(String filename) {
+        Path directory = getDirectoryPath();
+        log.info(() -> "Path to uploaded files directory has been obtained");
+
+        Path filePath = directory.resolve(filename);
+        log.info(() -> "Target path for file: " + filePath + " is resolved");
+
+        if (Files.notExists(filePath)) {
+            log.info(() -> "There is no such file: " + filePath);
+            return new byte[0];
+        }
+
+        byte[] data = read(filePath);
+        log.info(() -> "File: " + filename + " has been read");
+        return data;
+    }
+
+
+    private byte[] read(Path filePath) {
+        try(BufferedInputStream input = new BufferedInputStream(new FileInputStream(filePath.toFile()))) {
+            byte[] bytes = new byte[maxFileSize * 1024 * 1024];
+            int readBytesAmount = input.read(bytes, 0, bytes.length);
+            byte[] data = new byte[readBytesAmount];
+            System.arraycopy(bytes, 0, data, 0, data.length);
+            return data;
+        } catch (IOException e) {
+            log.fatal(() -> "Exception during reading a file by path: " + filePath);
+            throw new InternalServerException();
+        }
     }
 
     private void deleteIfExists(Path path) {
