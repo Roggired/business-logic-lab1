@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.yofik.kickstoper.domain.entity.application.ApplicationDto;
 import ru.yofik.kickstoper.domain.entity.application.ApplicationShortView;
+import ru.yofik.kickstoper.domain.entity.application.FinanceData;
 import ru.yofik.kickstoper.domain.service.application.ApplicationService;
 
 import java.util.List;
@@ -27,5 +28,15 @@ public class ApplicationResource {
     @GetMapping("")
     public List<ApplicationShortView> getUserApplications() {
         return applicationService.getAllApplications();
+    }
+
+    @PutMapping(value = "/{id}/finances", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void updateFinanceData(@PathVariable int id, @RequestBody FinanceData financeData) {
+        applicationService.updateFinanceData(financeData, id);
+    }
+
+    @GetMapping(value = "/{id}/finances")
+    public FinanceData getFinanceData(@PathVariable int id) {
+        return applicationService.getFinanceData(id);
     }
 }

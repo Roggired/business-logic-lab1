@@ -58,6 +58,10 @@ public class Application {
     @Future
     private ZonedDateTime projectEndDate;
 
+    @OneToOne
+    @JoinColumn(name = "finance_data_id")
+    private FinanceData financeData;
+
 
     public ApplicationDto toDto() {
         return new ApplicationDto(
