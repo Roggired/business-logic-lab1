@@ -86,8 +86,8 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new ApplicationStatusNotSuitableException();
         }
 
-        int result = applicationRepository.updateStatus(id, ApplicationStatus.STARTED);
-        log.info(() -> "Result of updated rows is " + result);
+        application.setApplicationStatus(ApplicationStatus.STARTED);
+        applicationRepository.saveAndFlush(application);
     }
 
     public List<ApplicationShortView> getAllApplications() {

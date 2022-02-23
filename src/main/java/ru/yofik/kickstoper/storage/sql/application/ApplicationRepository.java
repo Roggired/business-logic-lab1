@@ -12,9 +12,4 @@ import ru.yofik.kickstoper.domain.entity.application.ApplicationStatus;
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Integer> {
     Application findByProjectName(String projectName);
-
-    @Transactional
-    @Modifying
-    @Query("UPDATE Application a SET a.applicationStatus = :status WHERE a.id = :id")
-    int updateStatus(@Param("id") int id, @Param("status") ApplicationStatus status);
 }
