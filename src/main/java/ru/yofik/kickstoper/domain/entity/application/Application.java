@@ -62,6 +62,12 @@ public class Application {
     @JoinColumn(name = "finance_data_id")
     private FinanceData financeData;
 
+    @Column
+    private String videoFilename;
+
+    @Column
+    private String descriptionFilename;
+
 
     public ApplicationDto toDto() {
         return new ApplicationDto(
@@ -72,7 +78,9 @@ public class Application {
                 subcategory.getId(),
                 shortDescription,
                 targetBudget,
-                projectEndDate.toInstant().toEpochMilli()
+                projectEndDate.toInstant().toEpochMilli(),
+                videoFilename,
+                descriptionFilename
         );
     }
 }

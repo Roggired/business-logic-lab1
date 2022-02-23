@@ -30,4 +30,6 @@ public class ApplicationDto {
     private long targetBudget;
     @Positive
     private long projectEndDate;
+    private String videoFilename;
+    private String descriptionFilename;
 }
