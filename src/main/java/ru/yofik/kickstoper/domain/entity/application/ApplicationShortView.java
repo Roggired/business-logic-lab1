@@ -11,4 +11,14 @@ public class ApplicationShortView {
     private final String projectName;
     private final String category;
     private final String subcategory;
+
+    public static ApplicationShortView fromApplication(Application application) {
+        return new ApplicationShortView(
+                application.getId(),
+                application.getApplicationStatus().toString(),
+                application.getProjectName(),
+                application.getCategory().getName(),
+                application.getSubcategory().getName()
+        );
+    }
 }

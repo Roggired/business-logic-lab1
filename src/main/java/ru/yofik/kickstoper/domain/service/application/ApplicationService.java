@@ -11,8 +11,14 @@ import java.util.List;
 
 @Service
 public interface ApplicationService {
+    boolean isExists(int id);
+
     int createApplication(@Validated ApplicationDto applicationDto);
+    void updateApplicationStatus(int id, String status);
+    void startApplication(int id);
+
     List<ApplicationShortView> getAllApplications();
+    ApplicationShortView getApplication(int id);
     void updateFinanceData(@Validated FinanceData financeData, int applicationId);
     FinanceData getFinanceData(int applicationId);
     void uploadVideo(ApplicationFile applicationFile, int applicationId);

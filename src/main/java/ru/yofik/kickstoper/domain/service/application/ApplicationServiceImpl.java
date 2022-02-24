@@ -4,11 +4,13 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import ru.yofik.kickstoper.api.exceptions.ApplicationStatusNotSuitableException;
 import ru.yofik.kickstoper.api.exceptions.InternalServerException;
 import ru.yofik.kickstoper.api.exceptions.ProjectNameIsNotFreeException;
 import ru.yofik.kickstoper.api.exceptions.RequestedElementNotExistException;
 import ru.yofik.kickstoper.domain.entity.application.Application;
 import ru.yofik.kickstoper.domain.entity.application.ApplicationDto;
+import ru.yofik.kickstoper.domain.entity.application.ApplicationStatus;
 import ru.yofik.kickstoper.domain.entity.application.ApplicationShortView;
 import ru.yofik.kickstoper.domain.entity.application.FinanceData;
 import ru.yofik.kickstoper.domain.entity.applicationFile.ApplicationFile;
@@ -41,6 +43,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 
     @Override
+    public boolean isExists(int id) {
+        return applicationRepository.existsById(id);
+    }
+
+    @Override
     public int createApplication(@Validated ApplicationDto applicationDto) {
         if (!projectNameIsFree(applicationDto)) {
             log.warn(() -> "Project name: " + applicationDto.getProjectName() + " is already in use");
@@ -55,23 +62,54 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    public void updateApplicationStatus(int id, String status) {
+        if (!isExists(id)) {
+            log.warn(() -> "Project id: " + id + " doesn't exist");
+            throw new RequestedElementNotExistException();
+        }
+
+        int result = applicationRepository.updateStatus(id, ApplicationStatus.valueOf(status));
+        log.info(() -> "Result of updated rows is " + result);
+    }
+
+    @Override
+    public void startApplication(int id) {
+        if (!isExists(id)) {
+            log.warn(() -> "Project id: " + id + " doesn't exist");
+            throw new RequestedElementNotExistException();
+        }
+
+        Application application = applicationRepository.getById(id);
+
+        if (application.getApplicationStatus() != ApplicationStatus.APPROVED) {
+            log.warn(() -> "Not approved project " + application.getProjectName() + " tried to be started");
+            throw new ApplicationStatusNotSuitableException();
+        }
+
+        application.setApplicationStatus(ApplicationStatus.STARTED);
+        applicationRepository.saveAndFlush(application);
+    }
+
     public List<ApplicationShortView> getAllApplications() {
         List<Application> applications = applicationRepository.findAll();
         log.info("All applications has been obtained");
         return applications.stream()
-                .map(application -> new ApplicationShortView(
-                        application.getId(),
-                        application.getApplicationStatus().toString(),
-                        application.getProjectName(),
-                        application.getCategory().getName(),
-                        application.getSubcategory().getName()
-                ))
+                .map(ApplicationShortView::fromApplication)
                 .collect(Collectors.toList());
     }
 
     @Override
+    public ApplicationShortView getApplication(int id) {
+        if (!isExists(id)) {
+            log.warn(() -> "Project id: " + id + " doesn't exist");
+            throw new RequestedElementNotExistException();
+        }
+
+        return ApplicationShortView.fromApplication(applicationRepository.getById(id));
+    }
+
     public void updateFinanceData(FinanceData financeData, int applicationId) {
-        Application application = getApplication(applicationId);
+        Application application = getFullApplication(applicationId);
         log.info(() -> "Application with id: " + applicationId + " has been found");
 
         if (application.getFinanceData() != null) {
@@ -90,7 +128,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public FinanceData getFinanceData(int applicationId) {
-        Application application = getApplication(applicationId);
+        Application application = getFullApplication(applicationId);
         log.info(() -> "Application with id: " +  applicationId + " has been found");
 
         if (application.getFinanceData() == null) {
@@ -104,7 +142,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public void uploadVideo(ApplicationFile applicationFile, int applicationId) {
-        Application application = getApplication(applicationId);
+        Application application = getFullApplication(applicationId);
         log.info(() -> "Application with id: " + applicationId + " has been obtained");
 
         if (application.getVideoFilename() != null) {
@@ -123,7 +161,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public void uploadDescription(ApplicationFile applicationFile, int applicationId) {
-        Application application = getApplication(applicationId);
+        Application application = getFullApplication(applicationId);
         log.info(() -> "Application with id: " + applicationId + " has been obtained");
 
         if (application.getDescriptionFilename() != null) {
@@ -142,7 +180,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public String getDescription(int applicationId) {
-        Application application = getApplication(applicationId);
+        Application application = getFullApplication(applicationId);
         log.info(() -> "Application with id: " + applicationId + " has been obtained");
 
         if (application.getDescriptionFilename() == null) {
@@ -156,7 +194,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         return new String(data, StandardCharsets.UTF_8);
     }
 
-    private @NotNull Application getApplication(int id) {
+    private @NotNull Application getFullApplication(int id) {
         return applicationRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn(() -> "Application with id: " +  id + " does not exist");
