@@ -1,8 +1,6 @@
 package ru.yofik.kickstoper.api.resources;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +14,7 @@ import ru.yofik.kickstoper.domain.entity.applicationFile.ApplicationFile;
 import ru.yofik.kickstoper.domain.service.application.ApplicationService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.io.IOException;
 import java.util.List;
@@ -32,36 +31,37 @@ public class ApplicationResource {
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public int createApplication(@RequestBody ApplicationDto applicationDto) {
-        return applicationService.createApplication(applicationDto);
+        return applicationService.create(applicationDto);
     }
 
-    @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void updateApplicationStatus(@PathVariable int id, @RequestBody @Valid StatusDto statusDto) {
-        applicationService.updateApplicationStatus(id, statusDto.status);
+    @PostMapping(value = "/{id}/cancel", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void cancelApplication(@PathVariable int id, @RequestBody @Valid CommentDto commentDto) {
+        applicationService.cancel(id, commentDto.comment);
+    }
+
+    @PostMapping(value = "/{id}/approve")
+    public void approveApplication(@PathVariable int id) {
+        applicationService.approve(id);
+    }
+
+    @PostMapping(value = "/{id}/sendToApprove")
+    public void sendToApproveApplication(@PathVariable int id) {
+        applicationService.sendToApprove(id);
     }
 
     @GetMapping("")
     public List<ApplicationShortView> getUserApplications() {
-        return applicationService.getAllApplications();
+        return applicationService.getAll();
     }
 
-    @GetMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}")
     public ApplicationShortView getConcreteApplication(@PathVariable int id) {
-        return applicationService.getApplication(id);
+        return applicationService.get(id);
     }
 
-    @PutMapping(value = "/{id}/start", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{id}/start")
     public void startApplication(@PathVariable int id) {
-        applicationService.startApplication(id);
-    }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    public static class StatusDto {
-        @Pattern(regexp = "(NEW|WAIT_FOR_APPROVE|APPROVED|CANCELED)",
-                message = "Статус должен удовлетворять спецификации")
-        private String status;
+        applicationService.start(id);
     }
 
     @PutMapping(value = "/{id}/finances", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -109,5 +109,19 @@ public class ApplicationResource {
     @GetMapping(value = "/{id}/description")
     public String getDescription(@PathVariable int id) {
         return applicationService.getDescription(id);
+    }
+
+
+    @Data
+    public static class StatusDto {
+        @Pattern(regexp = "(NEW|STARTED|APPROVED|CANCELED|WAIT_FOR_APPROVE)",
+                message = "Статус должен удовлетворять спецификации")
+        private String status;
+    }
+
+    @Data
+    public static class CommentDto {
+        @NotBlank
+        private String comment;
     }
 }

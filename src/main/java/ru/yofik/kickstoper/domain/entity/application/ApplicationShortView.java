@@ -11,6 +11,7 @@ public class ApplicationShortView {
     private final String projectName;
     private final String category;
     private final String subcategory;
+    private final String comment;
 
     public static ApplicationShortView fromApplication(Application application) {
         return new ApplicationShortView(
@@ -18,7 +19,8 @@ public class ApplicationShortView {
                 application.getApplicationStatus().toString(),
                 application.getProjectName(),
                 application.getCategory().getName(),
-                application.getSubcategory().getName()
+                application.getSubcategory().getName(),
+                application.getComment() == null ? null : application.getComment().getText()
         );
     }
 }

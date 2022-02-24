@@ -13,12 +13,14 @@ import java.util.List;
 public interface ApplicationService {
     boolean isExists(int id);
 
-    int createApplication(@Validated ApplicationDto applicationDto);
-    void updateApplicationStatus(int id, String status);
-    void startApplication(int id);
+    int create(@Validated ApplicationDto applicationDto);
+    void cancel(int id, String comment);
+    void approve(int id);
+    void sendToApprove(int id);
+    void start(int id);
 
-    List<ApplicationShortView> getAllApplications();
-    ApplicationShortView getApplication(int id);
+    List<ApplicationShortView> getAll();
+    ApplicationShortView get(int id);
     void updateFinanceData(@Validated FinanceData financeData, int applicationId);
     FinanceData getFinanceData(int applicationId);
     void uploadVideo(ApplicationFile applicationFile, int applicationId);

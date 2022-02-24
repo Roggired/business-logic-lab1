@@ -55,6 +55,7 @@ public class ApplicationFactoryImpl implements ApplicationFactory {
                 projectEndDate,
                 null,
                 null,
+                null,
                 null
         );
     }

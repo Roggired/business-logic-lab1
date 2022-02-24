@@ -1,5 +1,6 @@
 package ru.yofik.kickstoper.domain.entity.application;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -67,6 +69,10 @@ public class Application {
 
     @Column
     private String descriptionFilename;
+
+    @OneToOne(mappedBy = "application", cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private Comment comment;
 
 
     public ApplicationDto toDto() {

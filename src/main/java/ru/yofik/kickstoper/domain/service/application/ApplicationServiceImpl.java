@@ -8,14 +8,11 @@ import ru.yofik.kickstoper.api.exceptions.ApplicationStatusNotSuitableException;
 import ru.yofik.kickstoper.api.exceptions.InternalServerException;
 import ru.yofik.kickstoper.api.exceptions.ProjectNameIsNotFreeException;
 import ru.yofik.kickstoper.api.exceptions.RequestedElementNotExistException;
-import ru.yofik.kickstoper.domain.entity.application.Application;
-import ru.yofik.kickstoper.domain.entity.application.ApplicationDto;
-import ru.yofik.kickstoper.domain.entity.application.ApplicationStatus;
-import ru.yofik.kickstoper.domain.entity.application.ApplicationShortView;
-import ru.yofik.kickstoper.domain.entity.application.FinanceData;
+import ru.yofik.kickstoper.domain.entity.application.*;
 import ru.yofik.kickstoper.domain.entity.applicationFile.ApplicationFile;
 import ru.yofik.kickstoper.storage.local.ApplicationFileRepository;
 import ru.yofik.kickstoper.storage.sql.application.ApplicationRepository;
+import ru.yofik.kickstoper.storage.sql.application.CommentRepository;
 import ru.yofik.kickstoper.storage.sql.application.FinanceDataRepository;
 
 import javax.validation.constraints.NotNull;
@@ -41,6 +38,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Autowired
     private ApplicationFileRepository applicationFileRepository;
 
+    @Autowired
+    private CommentRepository commentRepository;
+
 
     @Override
     public boolean isExists(int id) {
@@ -48,7 +48,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public int createApplication(@Validated ApplicationDto applicationDto) {
+    public int create(@Validated ApplicationDto applicationDto) {
         if (!projectNameIsFree(applicationDto)) {
             log.warn(() -> "Project name: " + applicationDto.getProjectName() + " is already in use");
             throw new ProjectNameIsNotFreeException();
@@ -62,24 +62,58 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public void updateApplicationStatus(int id, String status) {
-        if (!isExists(id)) {
-            log.warn(() -> "Project id: " + id + " doesn't exist");
-            throw new RequestedElementNotExistException();
+    public void cancel(int id, String comment) {
+        Application application = getFullApplication(id);
+
+        if (application.getApplicationStatus() != ApplicationStatus.WAIT_FOR_APPROVE) {
+            log.warn(() -> "From WAIT_FOR_APPROVE status an application can be moved only in APPROVED or CANCELED statuses");
+            throw new ApplicationStatusNotSuitableException();
         }
 
-        int result = applicationRepository.updateStatus(id, ApplicationStatus.valueOf(status));
-        log.info(() -> "Result of updated rows is " + result);
+        commentRepository.saveAndFlush(
+                new Comment(
+                        0,
+                        comment,
+                        application
+                )
+        );
+        application.setApplicationStatus(ApplicationStatus.CANCELED);
+        applicationRepository.saveAndFlush(application);
+        log.info(() -> "New status for application: " +  id + " is: CANCELED");
     }
 
     @Override
-    public void startApplication(int id) {
-        if (!isExists(id)) {
-            log.warn(() -> "Project id: " + id + " doesn't exist");
-            throw new RequestedElementNotExistException();
+    public void approve(int id) {
+        Application application = getFullApplication(id);
+
+        if (application.getApplicationStatus() != ApplicationStatus.WAIT_FOR_APPROVE) {
+            log.warn(() -> "From WAIT_FOR_APPROVE status an application can be moved only in APPROVED or CANCELED statuses");
+            throw new ApplicationStatusNotSuitableException();
         }
 
-        Application application = applicationRepository.getById(id);
+        application.setApplicationStatus(ApplicationStatus.APPROVED);
+        applicationRepository.saveAndFlush(application);
+        log.info(() -> "New status for application: " +  id + " is: APPROVED");
+    }
+
+    @Override
+    public void sendToApprove(int id) {
+        Application application = getFullApplication(id);
+
+        if (application.getApplicationStatus() != ApplicationStatus.NEW &&
+            application.getApplicationStatus() != ApplicationStatus.CANCELED) {
+            log.warn(() -> "An application can be send to approve only with statuses NEW and CANCELED");
+            throw new ApplicationStatusNotSuitableException();
+        }
+
+        application.setApplicationStatus(ApplicationStatus.WAIT_FOR_APPROVE);
+        applicationRepository.saveAndFlush(application);
+        log.info(() -> "New status for application: " +  id + " is: WAIT_FOR_APPROVE");
+    }
+
+    @Override
+    public void start(int id) {
+        Application application = getFullApplication(id);
 
         if (application.getApplicationStatus() != ApplicationStatus.APPROVED) {
             log.warn(() -> "Not approved project " + application.getProjectName() + " tried to be started");
@@ -90,7 +124,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         applicationRepository.saveAndFlush(application);
     }
 
-    public List<ApplicationShortView> getAllApplications() {
+    public List<ApplicationShortView> getAll() {
         List<Application> applications = applicationRepository.findAll();
         log.info("All applications has been obtained");
         return applications.stream()
@@ -99,18 +133,19 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public ApplicationShortView getApplication(int id) {
-        if (!isExists(id)) {
-            log.warn(() -> "Project id: " + id + " doesn't exist");
-            throw new RequestedElementNotExistException();
-        }
-
-        return ApplicationShortView.fromApplication(applicationRepository.getById(id));
+    public ApplicationShortView get(int id) {
+        return ApplicationShortView.fromApplication(getFullApplication(id));
     }
 
+    @Override
     public void updateFinanceData(FinanceData financeData, int applicationId) {
         Application application = getFullApplication(applicationId);
         log.info(() -> "Application with id: " + applicationId + " has been found");
+
+        if (updateApplicationAllowed(application.getApplicationStatus())) {
+            log.warn(() -> "Finance data can be changed only for applications with statuses NEW or CANCELED");
+            throw new ApplicationStatusNotSuitableException();
+        }
 
         if (application.getFinanceData() != null) {
             application.getFinanceData().setBankName(financeData.getBankName());
@@ -145,6 +180,11 @@ public class ApplicationServiceImpl implements ApplicationService {
         Application application = getFullApplication(applicationId);
         log.info(() -> "Application with id: " + applicationId + " has been obtained");
 
+        if (updateApplicationAllowed(application.getApplicationStatus())) {
+            log.warn(() -> "Video can be changed only for applications with statuses NEW or CANCELED");
+            throw new ApplicationStatusNotSuitableException();
+        }
+
         if (application.getVideoFilename() != null) {
             applicationFileRepository.delete(application.getVideoFilename());
             log.info(() -> "Old file with video has been deleted for application: " + applicationId);
@@ -163,6 +203,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     public void uploadDescription(ApplicationFile applicationFile, int applicationId) {
         Application application = getFullApplication(applicationId);
         log.info(() -> "Application with id: " + applicationId + " has been obtained");
+
+        if (updateApplicationAllowed(application.getApplicationStatus())) {
+            log.warn(() -> "Description can be changed only for applications with statuses NEW or CANCELED");
+            throw new ApplicationStatusNotSuitableException();
+        }
 
         if (application.getDescriptionFilename() != null) {
             applicationFileRepository.delete(application.getDescriptionFilename());
@@ -192,6 +237,11 @@ public class ApplicationServiceImpl implements ApplicationService {
         log.info(() -> "File with description: " + application.getDescriptionFilename() + " has been read");
 
         return new String(data, StandardCharsets.UTF_8);
+    }
+
+    private boolean updateApplicationAllowed(ApplicationStatus applicationStatus) {
+        return applicationStatus != ApplicationStatus.NEW &&
+                applicationStatus != ApplicationStatus.CANCELED;
     }
 
     private @NotNull Application getFullApplication(int id) {
