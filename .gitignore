@@ -2,3 +2,4 @@
 /.gradle/
 /HELP.md/
 /.idea/
+/src/main/resources/application-prod.yml
