@@ -18,3 +18,8 @@ local:
 
 server:
   port: 65100
+
+auth:
+  session:
+    max-age: 3600
+    key: sessionId
