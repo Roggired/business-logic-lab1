@@ -6,12 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import javax.validation.ConstraintViolationException;
 
 @ControllerAdvice
 @Log4j2
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler {
     private static final JsonSerializer<ResponseOnException> SERIALIZER = (src, typeOfSrc, context) -> {
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("code", new JsonPrimitive(src.getCode().getCode()));
@@ -24,8 +25,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             .create();
 
 
+    @ExceptionHandler(value = {ConstraintViolationException.class})
+    public ResponseEntity<?> handle(ConstraintViolationException exception) {
+        return new ResponseEntity<Object>(GSON.toJson(exception), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(value = {ResponseOnException.class})
-    public ResponseEntity<?> handle(ResponseOnException exception, WebRequest webRequest) {
+    public ResponseEntity<?> handle(ResponseOnException exception) {
+        if (exception.getCode().getCode() == 4010) {
+            return new ResponseEntity<Object>(GSON.toJson(exception), HttpStatus.UNAUTHORIZED);
+        }
+
+        if (exception.getCode().getCode() == 4030) {
+            return new ResponseEntity<Object>(GSON.toJson(exception), HttpStatus.FORBIDDEN);
+        }
+
         if (exception.getCode().getCode() >= 4000 && exception.getCode().getCode() < 5000) {
             return new ResponseEntity<Object>(GSON.toJson(exception), HttpStatus.BAD_REQUEST);
         }

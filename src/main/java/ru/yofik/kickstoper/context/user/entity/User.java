@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.yofik.kickstoper.context.user.service.PasswordEncryption;
 
 import javax.persistence.*;
+import java.util.Base64;
 
 @Getter
 @Setter
@@ -32,4 +34,11 @@ public class User {
 
     @Column(nullable = false)
     private Role role;
+
+
+    public void securePassword() {
+        PasswordEncryption passwordEncryption = new PasswordEncryption();
+        byte[] passwordBytes = Base64.getDecoder().decode(password);
+        password = passwordEncryption.encrypt(passwordBytes);
+    }
 }

@@ -1,9 +1,10 @@
 package ru.yofik.kickstoper.context.user.api.requests;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.validator.constraints.Length;
+import ru.yofik.kickstoper.context.user.entity.Role;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @RequiredArgsConstructor
 public class UserRegisterRequest {
@@ -15,4 +16,6 @@ public class UserRegisterRequest {
     public final String email;
     @NotBlank
     public final String passwordBase64;
+    @NotNull
+    public final Role role;
 }

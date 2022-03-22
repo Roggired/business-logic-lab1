@@ -3,7 +3,7 @@ package ru.yofik.kickstoper.context.application.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.yofik.kickstoper.api.exceptions.ProjectEndDateIsBeforeNowException;
+import ru.yofik.kickstoper.context.application.exception.ProjectEndDateIsBeforeNowException;
 import ru.yofik.kickstoper.context.application.entity.Application;
 import ru.yofik.kickstoper.context.application.dto.ApplicationDto;
 import ru.yofik.kickstoper.context.application.entity.ApplicationStatus;

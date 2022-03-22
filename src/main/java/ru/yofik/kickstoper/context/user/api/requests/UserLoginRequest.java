@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 @RequiredArgsConstructor
 public class UserLoginRequest {
     @NotBlank
-    public final String login;
+    public final String email;
     @NotBlank
     public final String passwordBase64;
 }

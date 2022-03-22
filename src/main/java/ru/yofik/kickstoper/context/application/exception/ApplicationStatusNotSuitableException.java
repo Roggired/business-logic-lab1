@@ -1,4 +1,7 @@
-package ru.yofik.kickstoper.api.exceptions;
+package ru.yofik.kickstoper.context.application.exception;
+
+import ru.yofik.kickstoper.api.exceptions.ResponseCode;
+import ru.yofik.kickstoper.api.exceptions.ResponseOnException;
 
 public class ApplicationStatusNotSuitableException extends ResponseOnException {
 

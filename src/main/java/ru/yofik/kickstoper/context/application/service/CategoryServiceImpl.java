@@ -3,7 +3,7 @@ package ru.yofik.kickstoper.context.application.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yofik.kickstoper.api.exceptions.RequestedElementNotExistException;
+import ru.yofik.kickstoper.context.application.exception.RequestedElementNotExistException;
 import ru.yofik.kickstoper.context.application.entity.Category;
 import ru.yofik.kickstoper.context.application.repository.CategoryRepository;
 
