@@ -9,10 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.util.unit.DataSize;
-import ru.yofik.kickstoper.domain.entity.category.Category;
-import ru.yofik.kickstoper.domain.entity.subcategory.Subcategory;
-import ru.yofik.kickstoper.storage.sql.category.CategoryRepository;
-import ru.yofik.kickstoper.storage.sql.subcategory.SubcategoryRepository;
+import ru.yofik.kickstoper.context.application.entity.Category;
+import ru.yofik.kickstoper.context.application.entity.Subcategory;
+import ru.yofik.kickstoper.context.application.repository.CategoryRepository;
+import ru.yofik.kickstoper.context.application.repository.SubcategoryRepository;
 
 import javax.servlet.MultipartConfigElement;
 import java.util.Arrays;
