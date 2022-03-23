@@ -15,7 +15,6 @@ import ru.yofik.kickstoper.context.user.exception.WrongPasswordException;
 import ru.yofik.kickstoper.context.user.factory.UserFactory;
 import ru.yofik.kickstoper.context.user.repository.UserRepository;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -74,6 +73,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Set<Role> getRolesOf(GetUserRolesRequest request) {
         User user = getUser(request.email);
-        return new HashSet<Role>() {{add( user.getRole()); }};
+        return new HashSet<Role>() {{
+            add(user.getRole());
+        }};
     }
 }

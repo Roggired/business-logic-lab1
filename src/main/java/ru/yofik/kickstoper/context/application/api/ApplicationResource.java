@@ -28,7 +28,6 @@ public class ApplicationResource {
     @Autowired
     private ApplicationService applicationService;
 
-
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public int createApplication(@RequestBody ApplicationDto applicationDto) {
         return applicationService.create(applicationDto);
@@ -109,14 +108,6 @@ public class ApplicationResource {
     @GetMapping(value = "/{id}/description")
     public String getDescription(@PathVariable int id) {
         return applicationService.getDescription(id);
-    }
-
-
-    @Data
-    public static class StatusDto {
-        @Pattern(regexp = "(NEW|STARTED|APPROVED|CANCELED|WAIT_FOR_APPROVE)",
-                message = "Статус должен удовлетворять спецификации")
-        private String status;
     }
 
     @Data

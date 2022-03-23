@@ -1,4 +1,4 @@
-package ru.yofik.kickstoper.infrustructure.configurations;
+package ru.yofik.kickstoper.infrastructure.configurations;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;

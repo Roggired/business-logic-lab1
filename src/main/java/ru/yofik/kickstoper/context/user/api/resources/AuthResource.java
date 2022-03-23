@@ -40,12 +40,6 @@ public class AuthResource {
                 .build();
     }
 
-    @PutMapping
-    public void login(@RequestBody @Valid UserLoginRequest request, HttpServletResponse servletResponse) {
-        CookieAccess access = userService.login(request);
-        setCookie(access, servletResponse);
-    }
-
     private void setCookie(CookieAccess access, HttpServletResponse servletResponse) {
         Cookie cookie = new Cookie(cookieKey, access.getSessionId());
         cookie.setMaxAge(sessionMaxAgeInSecs);

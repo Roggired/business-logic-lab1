@@ -1,4 +1,4 @@
-package ru.yofik.kickstoper.infrustructure.configurations;
+package ru.yofik.kickstoper.infrastructure.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import ru.yofik.kickstoper.context.user.entity.Role;
 
 import javax.security.auth.login.AppConfigurationEntry;
 import java.util.Collections;
@@ -26,8 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authenticationProvider(provideJaasAuthenticationProvider());
         http.authorizeRequests()
-                .antMatchers("/api/v1/**")
-                .authenticated()
+                .antMatchers("/api/v1/application/**")
+                .hasAnyRole(Role.CREATOR.toString(), Role.MODERATOR.toString())
                 .and()
                 .httpBasic();
 
@@ -35,7 +36,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/api/v2/auth");
+        web
+                .ignoring()
+                .antMatchers("/api/v2/auth")
+                .antMatchers("/api/v1/categories/**")
+                .antMatchers("/api/v1/subcategories/**");
     }
 
     public DefaultJaasAuthenticationProvider provideJaasAuthenticationProvider() {
