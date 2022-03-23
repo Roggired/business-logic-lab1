@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.util.unit.DataSize;
 import ru.yofik.kickstoper.domain.entity.category.Category;
@@ -20,9 +22,16 @@ import java.util.List;
 
 @SpringBootApplication
 @Log4j2
-public class KickstoperApplication {
+public class KickstoperApplication extends SpringBootServletInitializer {
+	private static Class<KickstoperApplication> applicationClass = KickstoperApplication.class;
+
 	public static void main(String[] args) {
 		SpringApplication.run(KickstoperApplication.class, args);
+	}
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		return builder.sources(applicationClass);
 	}
 
 	@Bean
