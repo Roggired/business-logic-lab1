@@ -1,8 +1,8 @@
-spring:
-  datasource:
-    url: jdbc:postgresql://db:5432/postgres
-    username: postgres
-    password: postgres
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://db:5432/postgres
+#    username: postgres
+#    password: postgres
 
 local:
   files:

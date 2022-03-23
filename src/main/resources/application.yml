@@ -1,6 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
+    jndi-name: java:jboss/datasources/PostgresDS
   jpa:
     hibernate:
       ddl-auto: create

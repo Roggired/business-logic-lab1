@@ -10,5 +10,7 @@ services:
     build: .
     depends_on:
       - db
+    volumes:
+      - ./deployments:/deployments
     ports:
       - "65100:65100"
