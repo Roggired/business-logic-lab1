@@ -11,6 +11,7 @@ import ru.yofik.kickstoper.domain.entity.applicationFile.ApplicationFile;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Repository
 @Log4j2
@@ -106,12 +107,12 @@ public class LocalApplicationFileRepository implements ApplicationFileRepository
 
     private Path getDirectoryPath() {
         try {
-            if (pathToDirectory == null || pathToDirectory.isBlank()) {
+            if (pathToDirectory == null || pathToDirectory.isEmpty()) {
                 log.fatal(() -> "Path to uploaded files directory is unset or blank");
                 throw new InternalServerException();
             }
 
-            Path path = Path.of(pathToDirectory).toRealPath();
+            Path path = Paths.get(pathToDirectory).toRealPath();
             if (!Files.isDirectory(path) || !Files.isReadable(path) || !Files.isWritable(path)) {
                 log.fatal(() -> "Path to uploaded files directory points to either not a directory, or not readable directory, or not writable directory");
                 throw new InternalServerException();

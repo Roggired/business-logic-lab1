@@ -6,11 +6,9 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    ports:
-      - "5432:5432"
   server:
     build: .
     depends_on:
       - db
     ports:
-      - "8080:8080"
+      - "65100:65100"
