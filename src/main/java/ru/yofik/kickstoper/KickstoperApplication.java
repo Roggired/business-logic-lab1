@@ -6,8 +6,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.jta.JtaTransactionManager;
 import org.springframework.util.unit.DataSize;
 import ru.yofik.kickstoper.context.application.entity.Category;
 import ru.yofik.kickstoper.context.application.entity.Subcategory;
@@ -20,9 +24,16 @@ import java.util.List;
 
 @SpringBootApplication
 @Log4j2
-public class KickstoperApplication {
+public class KickstoperApplication extends SpringBootServletInitializer {
+	private static Class<KickstoperApplication> applicationClass = KickstoperApplication.class;
+
 	public static void main(String[] args) {
 		SpringApplication.run(KickstoperApplication.class, args);
+	}
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		return builder.sources(applicationClass);
 	}
 
 	@Bean
@@ -67,5 +78,10 @@ public class KickstoperApplication {
 		factory.setMaxFileSize(DataSize.ofMegabytes(maxFileSize));
 		factory.setMaxRequestSize(DataSize.ofMegabytes(maxFileSize));
 		return factory.createMultipartConfig();
+	}
+
+	@Bean
+	public PlatformTransactionManager platformTransactionManager(){
+		return new JtaTransactionManager();
 	}
 }
