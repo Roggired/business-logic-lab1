@@ -10,6 +10,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.jta.JtaTransactionManager;
 import org.springframework.util.unit.DataSize;
 import ru.yofik.kickstoper.domain.entity.category.Category;
 import ru.yofik.kickstoper.domain.entity.subcategory.Subcategory;
@@ -76,5 +78,10 @@ public class KickstoperApplication extends SpringBootServletInitializer {
 		factory.setMaxFileSize(DataSize.ofMegabytes(maxFileSize));
 		factory.setMaxRequestSize(DataSize.ofMegabytes(maxFileSize));
 		return factory.createMultipartConfig();
+	}
+
+	@Bean
+	public PlatformTransactionManager platformTransactionManager(){
+		return new JtaTransactionManager();
 	}
 }
