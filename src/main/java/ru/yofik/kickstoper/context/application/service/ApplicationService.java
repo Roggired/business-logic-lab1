@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.yofik.kickstoper.context.application.dto.ApplicationDto;
 import ru.yofik.kickstoper.context.application.view.ApplicationShortView;
-import ru.yofik.kickstoper.context.application.entity.FinanceData;
-import ru.yofik.kickstoper.context.application.entity.ApplicationFile;
+import ru.yofik.kickstoper.context.application.model.FinanceData;
+import ru.yofik.kickstoper.context.application.model.ApplicationFile;
 
 import java.util.List;
 

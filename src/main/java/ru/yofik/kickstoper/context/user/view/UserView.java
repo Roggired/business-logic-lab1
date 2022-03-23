@@ -2,7 +2,7 @@ package ru.yofik.kickstoper.context.user.view;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.yofik.kickstoper.context.user.entity.Role;
+import ru.yofik.kickstoper.context.user.model.Role;
 
 @Data
 @AllArgsConstructor

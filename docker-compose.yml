@@ -1,14 +1,26 @@
 version: "3.8"
 
 services:
+  redis:
+    image: "redis:latest"
   db:
     image: "postgres:latest"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+  bank:
+    build: bank
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "65101:65101"
   server:
     build: .
     depends_on:
       - db
+      - redis
+    volumes:
+      - ./deployments:/deployments
     ports:
       - "65100:65100"

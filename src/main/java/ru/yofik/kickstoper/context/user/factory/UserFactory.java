@@ -3,7 +3,7 @@ package ru.yofik.kickstoper.context.user.factory;
 import org.springframework.stereotype.Component;
 import ru.yofik.kickstoper.context.user.api.requests.UserLoginRequest;
 import ru.yofik.kickstoper.context.user.api.requests.UserRegisterRequest;
-import ru.yofik.kickstoper.context.user.entity.User;
+import ru.yofik.kickstoper.context.user.model.User;
 
 @Component
 public class UserFactory {

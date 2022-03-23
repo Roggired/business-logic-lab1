@@ -1,7 +1,7 @@
 package ru.yofik.kickstoper.context.application.service;
 
 import org.springframework.stereotype.Service;
-import ru.yofik.kickstoper.context.application.entity.Category;
+import ru.yofik.kickstoper.context.application.model.Category;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;

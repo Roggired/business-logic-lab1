@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Log4j2
 @SpringBootApplication
-@EnableTransactionManagement
 public class KickstoperApplication {
     public static void main(String[] args) {
         SpringApplication.run(KickstoperApplication.class, args);

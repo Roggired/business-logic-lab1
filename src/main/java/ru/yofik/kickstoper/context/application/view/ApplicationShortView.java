@@ -2,7 +2,7 @@ package ru.yofik.kickstoper.context.application.view;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import ru.yofik.kickstoper.context.application.entity.Application;
+import ru.yofik.kickstoper.context.application.model.Application;
 
 @Getter
 @AllArgsConstructor

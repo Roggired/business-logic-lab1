@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.yofik.kickstoper.context.application.dto.ApplicationDto;
 import ru.yofik.kickstoper.context.application.view.ApplicationShortView;
-import ru.yofik.kickstoper.context.application.entity.FinanceData;
-import ru.yofik.kickstoper.context.application.entity.ApplicationFile;
+import ru.yofik.kickstoper.context.application.model.FinanceData;
+import ru.yofik.kickstoper.context.application.model.ApplicationFile;
 import ru.yofik.kickstoper.context.application.service.ApplicationService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import java.io.IOException;
 import java.util.List;
 
@@ -27,7 +26,6 @@ import java.util.List;
 public class ApplicationResource {
     @Autowired
     private ApplicationService applicationService;
-
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public int createApplication(@RequestBody ApplicationDto applicationDto) {
@@ -109,14 +107,6 @@ public class ApplicationResource {
     @GetMapping(value = "/{id}/description")
     public String getDescription(@PathVariable int id) {
         return applicationService.getDescription(id);
-    }
-
-
-    @Data
-    public static class StatusDto {
-        @Pattern(regexp = "(NEW|STARTED|APPROVED|CANCELED|WAIT_FOR_APPROVE)",
-                message = "Статус должен удовлетворять спецификации")
-        private String status;
     }
 
     @Data

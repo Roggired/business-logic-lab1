@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Repository;
 import ru.yofik.kickstoper.api.exceptions.InternalServerException;
-import ru.yofik.kickstoper.context.application.entity.ApplicationFile;
+import ru.yofik.kickstoper.context.application.model.ApplicationFile;
 
 import java.io.*;
 import java.nio.file.Files;

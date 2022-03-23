@@ -1,7 +1,7 @@
 package ru.yofik.kickstoper.context.application.repository;
 
 import org.springframework.stereotype.Repository;
-import ru.yofik.kickstoper.context.application.entity.ApplicationFile;
+import ru.yofik.kickstoper.context.application.model.ApplicationFile;
 
 @Repository
 public interface ApplicationFileRepository {

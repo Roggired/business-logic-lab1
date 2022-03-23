@@ -6,9 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.yofik.kickstoper.context.user.api.requests.UserLoginRequest;
 import ru.yofik.kickstoper.context.user.api.requests.UserRegisterRequest;
-import ru.yofik.kickstoper.context.user.entity.CookieAccess;
+import ru.yofik.kickstoper.context.user.model.CookieAccess;
 import ru.yofik.kickstoper.context.user.service.UserService;
 
 import javax.servlet.http.Cookie;
@@ -38,12 +37,6 @@ public class AuthResource {
         return ResponseEntity
                 .created(URI.create("/api/v2/users"))
                 .build();
-    }
-
-    @PutMapping
-    public void login(@RequestBody @Valid UserLoginRequest request, HttpServletResponse servletResponse) {
-        CookieAccess access = userService.login(request);
-        setCookie(access, servletResponse);
     }
 
     private void setCookie(CookieAccess access, HttpServletResponse servletResponse) {

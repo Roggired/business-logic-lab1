@@ -1,7 +1,7 @@
 package ru.yofik.kickstoper.context.user.api.requests;
 
 import lombok.RequiredArgsConstructor;
-import ru.yofik.kickstoper.context.user.entity.Role;
+import ru.yofik.kickstoper.context.user.model.Role;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

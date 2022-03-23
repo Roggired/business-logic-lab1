@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yofik.kickstoper.context.application.entity.Category;
+import ru.yofik.kickstoper.context.application.model.Category;
 import ru.yofik.kickstoper.context.application.service.CategoryService;
 
 import java.util.List;
