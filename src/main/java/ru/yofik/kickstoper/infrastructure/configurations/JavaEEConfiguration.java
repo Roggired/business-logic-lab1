@@ -7,8 +7,8 @@ import org.springframework.transaction.jta.JtaTransactionManager;
 
 @Configuration
 public class JavaEEConfiguration {
-    @Bean
-    public PlatformTransactionManager provideTransactionManager(){
+    @Bean(name = "transactionManager")
+    public JtaTransactionManager provideTransactionManager(){
         return new JtaTransactionManager();
     }
 }

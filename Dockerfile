@@ -29,7 +29,7 @@ RUN cd /tmp && \
     && /bin/sh -c '$JBOSS_HOME/bin/standalone.sh &' \
     && sleep 10 \
     && $JBOSS_HOME/bin/jboss-cli.sh --connect --command="deploy /tmp/postgresql-${POSTGRESQL_DRIVER_VERSION}.jar" \
-    && $JBOSS_HOME/bin/jboss-cli.sh --connect --command="xa-data-source add --name=VirtualLab --jndi-name=java:/PostgresDS --user-name=${DB_USER} --password=${DB_PASS} --driver-name=postgresql-${POSTGRESQL_DRIVER_VERSION}.jar --xa-datasource-class=org.postgresql.xa.PGXADataSource --xa-datasource-properties=ServerName=${DB_HOST},PortNumber=${DB_PORT},DatabaseName=${DB_NAME} --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter" \
+    && $JBOSS_HOME/bin/jboss-cli.sh --connect --command="xa-data-source add --name=PostgresDS --jndi-name=java:/PostgresDS --user-name=${DB_USER} --password=${DB_PASS} --driver-name=postgresql-${POSTGRESQL_DRIVER_VERSION}.jar --xa-datasource-class=org.postgresql.xa.PGXADataSource --xa-datasource-properties=ServerName=${DB_HOST},PortNumber=${DB_PORT},DatabaseName=${DB_NAME} --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter" \
     && $JBOSS_HOME/bin/jboss-cli.sh --connect --command=:shutdown \
     && rm -rf $JBOSS_HOME/standalone/configuration/standalone_xml_history/ $JBOSS_HOME/standalone/log/* \
     && rm -rf /tmp/postgresql-*

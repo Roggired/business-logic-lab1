@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    jndi-name: java:jboss/datasources/PostgresDS
+    jndi-name: java:/PostgresDS
   jpa:
     hibernate:
       ddl-auto: create
@@ -16,6 +16,7 @@ spring:
 local:
   files:
     maxFileSize: 256
+    directory: /uploaded-files
 
 server:
   port: 65100
