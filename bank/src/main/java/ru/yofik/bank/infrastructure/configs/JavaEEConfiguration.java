@@ -1,8 +1,7 @@
-package ru.yofik.kickstoper.infrastructure.configurations;
+package ru.yofik.bank.infrastructure.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.jta.JtaTransactionManager;
 

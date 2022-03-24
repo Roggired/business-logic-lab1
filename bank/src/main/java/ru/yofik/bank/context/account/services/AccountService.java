@@ -9,8 +9,10 @@ import ru.yofik.bank.context.account.view.AccountView;
 @Service
 public interface AccountService {
     CreateAccountResponse createAccount(CreateAccountRequest request);
-
     void putMoney(PutMoneyRequest request, String accountId);
-
     AccountView getAccountInfo(String accountId, int pinCode);
+
+    boolean isPinCodeCorrect(String accountId, int pinCode);
+    boolean isAccountExists(String name, String surname);
+    boolean isAccountExists(String accountId);
 }

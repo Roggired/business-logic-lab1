@@ -74,15 +74,15 @@ public class AccountServiceImpl implements AccountService {
         return AccountView.from(account);
     }
 
-    private boolean isPinCodeCorrect(String accountId, int pinCode) {
+    public boolean isPinCodeCorrect(String accountId, int pinCode) {
         return accountRepository.findByAccountId(accountId).getPinCode() == pinCode;
     }
 
-    private boolean isAccountExists(String name, String surname) {
+    public boolean isAccountExists(String name, String surname) {
         return accountRepository.findByNameAndSurname(name, surname) == null;
     }
 
-    private boolean isAccountExists(String accountId) {
+    public boolean isAccountExists(String accountId) {
         return accountRepository.findByAccountId(accountId) == null;
     }
 }
