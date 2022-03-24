@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.yofik.bank.context.account.view.AccountView;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -38,4 +39,12 @@ public class Account {
 
     @Positive
     private int balance;
+
+    public AccountView toAccountView() {
+        return new AccountView(
+                name,
+                surname,
+                balance
+        );
+    }
 }

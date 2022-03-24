@@ -9,8 +9,6 @@ import ru.yofik.bank.context.transaction.view.TransactionView;
 @Service
 public interface TransactionService {
     CreateTransactionResponse createTransaction(CreateTransactionRequest request);
-
     TransactionView getTransaction(String id);
-
     void approveTransaction(String id, ApproveTransactionRequest request);
 }

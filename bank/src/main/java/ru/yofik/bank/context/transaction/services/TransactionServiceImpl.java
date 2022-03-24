@@ -3,7 +3,6 @@ package ru.yofik.bank.context.transaction.services;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.jta.JtaTransactionManager;
 import ru.yofik.bank.api.exceptions.InternalServerException;
@@ -19,8 +18,9 @@ import ru.yofik.bank.context.transaction.model.Transaction;
 import ru.yofik.bank.context.transaction.repository.TransactionRepository;
 import ru.yofik.bank.context.transaction.view.TransactionView;
 
-import javax.transaction.*;
-import java.util.NoSuchElementException;
+import javax.transaction.SystemException;
+import java.util.Arrays;
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -39,17 +39,10 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public CreateTransactionResponse createTransaction(CreateTransactionRequest request) {
-        if (!accountService.isAccountExists(request.fromAccount)) {
-            log.warn(() -> "From account " + request.fromAccount + " not exists");
-            throw new RequestedElementNotExistException("Account not exists");
-        }
+        Account fromAccount = accountService.getAccount(request.fromAccount);
+        Account toAccount = accountService.getAccount(request.toAccount);
 
-        if (!accountService.isAccountExists(request.toAccount)) {
-            log.warn(() -> "To account " + request.toAccount + " not exists");
-            throw new RequestedElementNotExistException("Account not exists");
-        }
-
-        Transaction transaction = new Transaction("", request.fromAccount, request.toAccount, request.amount);
+        Transaction transaction = new Transaction("", fromAccount.getAccountId(), toAccount.getAccountId(), request.amount);
         String generatedId = transactionRepository.save(transaction).getId();
 
         log.info(() -> "Transaction with id " + generatedId + " was created");
@@ -58,28 +51,18 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransactionView getTransaction(String id) {
-        if (!isExists(id)) {
-            log.warn(() -> "Transaction " + id + " not exists");
-            throw new RequestedElementNotExistException("Transaction not exists");
-        }
-
-        Transaction transaction = transactionRepository.findById(id).get();
+        Transaction transaction = getTransactionFromDB(id);
         log.info(() -> "Returning transaction with ID " + transaction.getId());
-        return TransactionView.from(transaction);
+        return transaction.toTransactionView();
     }
 
     @Override
-    public void approveTransaction(String id, ApproveTransactionRequest request)  {
-        if (!isExists(id)) {
-            log.warn(() -> "Transaction " + id + " not exists");
-            throw new RequestedElementNotExistException("Transaction not exists");
-        }
-
-        Transaction transaction = transactionRepository.findById(id).get();
+    public void approveTransaction(String id, ApproveTransactionRequest request) {
+        Transaction transaction = getTransactionFromDB(id);
         log.info(() -> "Got transaction with ID " + transaction.getId());
 
-        Account fromAccount = accountRepository.findByAccountId(transaction.getFromAccount());
-        Account toAccount = accountRepository.findByAccountId(transaction.getToAccount());
+        Account fromAccount = accountService.getAccount(transaction.getFromAccount());
+        Account toAccount = accountService.getAccount(transaction.getToAccount());
 
         if (!doAccountHasMoneyForTransaction(fromAccount, transaction)) {
             log.warn(() -> "Account " + fromAccount.getAccountId() + " doesnt have money for transaction");
@@ -92,8 +75,8 @@ public class TransactionServiceImpl implements TransactionService {
             fromAccount.setBalance(fromAccount.getBalance() - transaction.getAmount());
             toAccount.setBalance(toAccount.getBalance() + transaction.getAmount());
 
-            accountRepository.saveAndFlush(fromAccount);
-            accountRepository.saveAndFlush(toAccount);
+            accountRepository.saveAllAndFlush(Arrays.asList(fromAccount, toAccount));
+            transactionRepository.delete(transaction);
 
             transactionManager.getTransactionManager().commit();
         } catch (Exception e) {
@@ -112,13 +95,15 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
 
-    private boolean isExists(String id) {
-        try {
-            transactionRepository.findById(id).get();
-            return true;
-        } catch (NoSuchElementException e) {
-            return false;
+    private Transaction getTransactionFromDB(String id) {
+        Optional<Transaction> transaction = transactionRepository.findById(id);
+
+        if (!transaction.isPresent()) {
+            log.warn(() -> "Transaction " + id + " not exists");
+            throw new RequestedElementNotExistException("Transaction not exists");
         }
+
+        return transaction.get();
     }
 
 }

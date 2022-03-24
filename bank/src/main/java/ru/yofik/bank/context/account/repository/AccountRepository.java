@@ -5,10 +5,10 @@ import org.springframework.stereotype.Repository;
 import ru.yofik.bank.context.account.model.Account;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
-    Account findByNameAndSurname(@NotBlank String name, @NotBlank String surname);
-
-    Account findByAccountId(@NotBlank String accountId);
+    Optional<Account> findByNameAndSurname(@NotBlank String name, @NotBlank String surname);
+    Optional<Account> findByAccountId(@NotBlank String accountId);
 }

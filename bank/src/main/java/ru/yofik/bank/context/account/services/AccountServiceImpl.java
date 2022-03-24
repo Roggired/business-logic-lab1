@@ -13,6 +13,8 @@ import ru.yofik.bank.context.account.model.Account;
 import ru.yofik.bank.context.account.repository.AccountRepository;
 import ru.yofik.bank.context.account.view.AccountView;
 
+import java.util.Optional;
+
 @Log4j2
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -41,17 +43,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void putMoney(PutMoneyRequest request, String accountId) {
-        if (!isAccountExists(accountId)) {
-            log.warn(() -> "Account " + accountId + " not exists");
-            throw new RequestedElementNotExistException("Account not exists");
-        }
+        Account account = getAccount(accountId);
+        checkPinCodeCorrectness(account, request.pinCode);
 
-        if (!isPinCodeCorrect(accountId, request.pinCode)) {
-            log.warn(() -> "Account pinCode " + request.pinCode + " is wrong");
-            throw new WrongPinCodeException();
-        }
-
-        Account account = accountRepository.findByAccountId(accountId);
         account.setBalance(account.getBalance() + request.amount);
         accountRepository.saveAndFlush(account);
         log.info(() -> "New balance is " + account.getBalance());
@@ -59,30 +53,32 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountView getAccountInfo(String accountId, int pinCode) {
-        if (!isAccountExists(accountId)) {
+        Account account = getAccount(accountId);
+        checkPinCodeCorrectness(account, pinCode);
+
+        log.info(() -> "Returning information for account " + accountId);
+        return account.toAccountView();
+    }
+
+    public Account getAccount(String accountId) {
+        Optional<Account> account = accountRepository.findByAccountId(accountId);
+
+        if (!account.isPresent()) {
             log.warn(() -> "Account " + accountId + " not exists");
             throw new RequestedElementNotExistException("Account not exists");
         }
 
-        if (!isPinCodeCorrect(accountId, pinCode)) {
+        return account.get();
+    }
+
+    private void checkPinCodeCorrectness(Account account, int pinCode) {
+        if (account.getPinCode() != pinCode) {
             log.warn(() -> "Account pinCode " + pinCode + " is wrong");
             throw new WrongPinCodeException();
         }
-
-        Account account = accountRepository.findByAccountId(accountId);
-        log.info(() -> "Returning information for account " + accountId);
-        return AccountView.from(account);
     }
 
-    public boolean isPinCodeCorrect(String accountId, int pinCode) {
-        return accountRepository.findByAccountId(accountId).getPinCode() == pinCode;
-    }
-
-    public boolean isAccountExists(String name, String surname) {
-        return accountRepository.findByNameAndSurname(name, surname) == null;
-    }
-
-    public boolean isAccountExists(String accountId) {
-        return accountRepository.findByAccountId(accountId) == null;
+    private boolean isAccountExists(String name, String surname) {
+        return accountRepository.findByNameAndSurname(name, surname).isPresent();
     }
 }

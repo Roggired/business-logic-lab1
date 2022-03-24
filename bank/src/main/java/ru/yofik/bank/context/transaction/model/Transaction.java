@@ -6,8 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.redis.core.RedisHash;
+import ru.yofik.bank.context.transaction.view.TransactionView;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.io.Serializable;
@@ -38,6 +40,14 @@ public class Transaction implements Serializable {
     @Positive
     @Column(nullable = false)
     private int amount;
+
+    public TransactionView toTransactionView() {
+        return new TransactionView(
+                fromAccount,
+                toAccount,
+                amount
+        );
+    }
 }
 
 
