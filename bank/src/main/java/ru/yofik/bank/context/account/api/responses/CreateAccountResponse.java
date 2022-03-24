@@ -4,6 +4,6 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class CreateAccountResponse {
-    public final int accountId;
+    public final String accountId;
     public final int pinCode;
 }

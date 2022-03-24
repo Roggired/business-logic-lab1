@@ -22,6 +22,10 @@ public class Account {
 
     @Column(nullable = false)
     @NotBlank
+    private String accountId;
+
+    @Column(nullable = false)
+    @NotBlank
     private String name;
 
     @Column(nullable = false)
@@ -33,5 +37,5 @@ public class Account {
     private int pinCode;
 
     @Positive
-    private int amount;
+    private int balance;
 }

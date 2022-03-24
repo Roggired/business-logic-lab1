@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public enum ResponseCode {
     BAD_REQUEST(4000),
+    WRONG_PIN_CODE(4001),
     REQUESTED_ELEMENT_NOT_EXIST(4004),
     ELEMENT_ALREADY_EXISTS(4006),
     UNAUTHENTICATED(4010),

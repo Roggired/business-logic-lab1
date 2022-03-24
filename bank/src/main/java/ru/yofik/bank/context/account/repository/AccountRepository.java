@@ -9,4 +9,6 @@ import javax.validation.constraints.NotBlank;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
     Account findByNameAndSurname(@NotBlank String name, @NotBlank String surname);
+
+    Account findByAccountId(@NotBlank String accountId);
 }
