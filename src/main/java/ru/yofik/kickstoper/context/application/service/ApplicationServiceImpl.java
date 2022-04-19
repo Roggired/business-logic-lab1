@@ -118,6 +118,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 "1",
                 "messaaaaaaage1"
         );
+        log.info("Message to Kafka has been sent");
     }
 
     @Override
