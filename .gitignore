@@ -1,5 +1,7 @@
 /build/
-**/build/
+bank/build/
+mailService/build/
+common/build/
 **/.gradle/
 **/.idea/
 /.gradle/

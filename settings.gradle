@@ -1,4 +1,5 @@
 rootProject.name = 'kickstoper'
+include 'common'
 include 'bank'
 include 'mailService'
 

@@ -15,6 +15,7 @@ import ru.yofik.kickstoper.context.application.repository.ApplicationFileReposit
 import ru.yofik.kickstoper.context.application.repository.ApplicationRepository;
 import ru.yofik.kickstoper.context.application.repository.CommentRepository;
 import ru.yofik.kickstoper.context.application.repository.FinanceDataRepository;
+import ru.yofik.kickstoper.context.mail.service.MailService;
 import ru.yofik.kickstoper.infrastructure.kafka.KafkaProducerService;
 
 import javax.validation.constraints.NotNull;
@@ -42,8 +43,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private CommentRepository commentRepository;
 
     @Autowired
-    private KafkaProducerService kafkaProducerService;
-
+    private MailService mailService;
 
     @Override
     public boolean isExists(int id) {
@@ -83,6 +83,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         application.setApplicationStatus(ApplicationStatus.CANCELED);
         applicationRepository.saveAndFlush(application);
         log.info(() -> "New status for application: " +  id + " is: CANCELED");
+
+        mailService.applicationHasBeenCanceledEmail(application);
+        log.info("Message to Kafka has been sent");
     }
 
     @Override
@@ -97,6 +100,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         application.setApplicationStatus(ApplicationStatus.APPROVED);
         applicationRepository.saveAndFlush(application);
         log.info(() -> "New status for application: " +  id + " is: APPROVED");
+
+        mailService.applicationHasBeenApprovedEmail(application);
+        log.info("Message to Kafka has been sent");
     }
 
     @Override
@@ -113,11 +119,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         applicationRepository.saveAndFlush(application);
         log.info(() -> "New status for application: " +  id + " is: WAIT_FOR_APPROVE");
 
-        kafkaProducerService.sendMessage(
-                "application-status-notification",
-                "1",
-                "messaaaaaaage1"
-        );
+        mailService.newApplicationToApproveEmail(application);
         log.info("Message to Kafka has been sent");
     }
 

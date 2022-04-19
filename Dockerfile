@@ -12,7 +12,7 @@ ARG DB_USER=postgres
 ARG DB_PASS=postgres
 
 RUN apt update --yes && apt install --yes \
-      openjdk-8-jre \
+      openjdk-11-jre \
       wget \
       tar \
       curl \
