@@ -11,10 +11,6 @@ import org.springframework.transaction.jta.JtaTransactionManager;
 public class JavaEEConfiguration {
     @Bean(name = "transactionManager")
     public JtaTransactionManager provideTransactionManager(){
-        JtaTransactionManager jtaTransactionManager = new JtaTransactionManager();
-        jtaTransactionManager.setTransactionManagerName("java:jboss/TransactionManager");
-        jtaTransactionManager.setUserTransactionName("java:jboss/UserTransaction");
-        jtaTransactionManager.afterPropertiesSet();
-        return jtaTransactionManager;
+        return new JtaTransactionManager();
     }
 }

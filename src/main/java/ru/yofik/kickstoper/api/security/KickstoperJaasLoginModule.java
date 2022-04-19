@@ -34,6 +34,7 @@ public class KickstoperJaasLoginModule implements LoginModule {
     @Override
     public boolean login() {
         log.info(() -> "Login module LOGIN");
+
         NameCallback nameCallback = new NameCallback("u");
         PasswordCallback passwordCallback = new PasswordCallback("p", false);
         callbackHandler.handle(new Callback[] { nameCallback, passwordCallback });

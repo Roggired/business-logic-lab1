@@ -15,6 +15,7 @@ import ru.yofik.kickstoper.context.application.repository.ApplicationFileReposit
 import ru.yofik.kickstoper.context.application.repository.ApplicationRepository;
 import ru.yofik.kickstoper.context.application.repository.CommentRepository;
 import ru.yofik.kickstoper.context.application.repository.FinanceDataRepository;
+import ru.yofik.kickstoper.infrastructure.kafka.KafkaProducerService;
 
 import javax.validation.constraints.NotNull;
 import java.nio.charset.StandardCharsets;
@@ -39,6 +40,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private KafkaProducerService kafkaProducerService;
 
 
     @Override
@@ -108,6 +112,12 @@ public class ApplicationServiceImpl implements ApplicationService {
         application.setApplicationStatus(ApplicationStatus.WAIT_FOR_APPROVE);
         applicationRepository.saveAndFlush(application);
         log.info(() -> "New status for application: " +  id + " is: WAIT_FOR_APPROVE");
+
+        kafkaProducerService.sendMessage(
+                "application-status-notification",
+                "1",
+                "messaaaaaaage1"
+        );
     }
 
     @Override

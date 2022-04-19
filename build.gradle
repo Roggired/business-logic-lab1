@@ -30,6 +30,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok:1.18.22'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
+	implementation 'org.apache.kafka:kafka-clients:3.1.0'
+
 	implementation 'com.google.http-client:google-http-client:1.39.2-sp.1'
 	implementation 'com.google.http-client:google-http-client-gson:1.39.2-sp.1'
 }
