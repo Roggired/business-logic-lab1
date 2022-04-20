@@ -16,6 +16,20 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  mail:
+    default-encoding: UTF-8
+    host: mega.super.duper.pochta
+    username: god
+    password: passwordOfGod
+    port: 25
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    protocol: smtp
+    test-connection: false
 
 logging.level:
   ru.yofik.mailservice: DEBUG
