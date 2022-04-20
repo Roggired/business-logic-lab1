@@ -11,6 +11,7 @@ import ru.yofik.mailservice.context.mailTask.repository.MailTaskRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -55,6 +56,6 @@ public class MailTaskServiceImpl implements MailTaskService {
                         task.getTitle(),
                         task.getBody()
                 ))
-                .toList();
+                .collect(Collectors.toList());
     }
 }
