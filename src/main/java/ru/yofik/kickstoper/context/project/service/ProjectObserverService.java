@@ -1,8 +1,7 @@
-package ru.yofik.kickstoper.context.project.model;
+package ru.yofik.kickstoper.context.project.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import ru.yofik.kickstoper.context.project.model.Project;
 import ru.yofik.kickstoper.context.project.repository.ProjectRepository;
 import ru.yofik.kickstoper.context.support.integration.client.BankClient;
 import ru.yofik.kickstoper.context.support.integration.request.GetAccountInfoRequest;
@@ -13,15 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class ProjectDiscoverer {
-    @Autowired
-    private ProjectRepository projectRepository;
+public class ProjectObserverService {
+    private final ProjectRepository projectRepository;
+    private final BankClient bankClient;
 
-    @Autowired
-    private BankClient bankClient;
+    public ProjectObserverService(ProjectRepository projectRepository, BankClient bankClient) {
+        this.projectRepository = projectRepository;
+        this.bankClient = bankClient;
+    }
 
 
-    @Scheduled(fixedDelay = 30000L)
     public void discoverBalanceOfAccountsAssociatedWithProjects() {
         List<Project> projects = projectRepository.findAll();
 
@@ -38,7 +38,6 @@ public class ProjectDiscoverer {
         projectRepository.saveAllAndFlush(projects);
     }
 
-    @Scheduled(fixedDelay = 30000L)
     public void deleteFinishedProjects() {
         List<Project> projects = projectRepository.findAll();
         List<Project> toBeRemoved = new ArrayList<>();
@@ -51,4 +50,5 @@ public class ProjectDiscoverer {
 
         projectRepository.deleteAll(toBeRemoved);
     }
+
 }

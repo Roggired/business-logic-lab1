@@ -1,6 +1,12 @@
 version: "3.8"
 
 services:
+  quartz:
+    build: quartzDb
+    environment:
+      - POSTGRES_DB=quartz
+      - POSTGRES_USER=quartz
+      - POSTGRES_PASSWORD=quartz
   redis:
     image: "redis:latest"
   db:
@@ -29,6 +35,7 @@ services:
       - db
       - redis
       - kafka
+      - quartz
     volumes:
       - ./deployments:/deployments
     ports:

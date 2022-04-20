@@ -1,7 +1,7 @@
 spring:
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    jndi-name: java:/PostgresDS
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+#    jndi-name: java:/PostgresDS
   jpa:
     hibernate:
       ddl-auto: create
@@ -12,6 +12,30 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  quartz:
+    wait-for-jobs-to-complete-on-shutdown: true
+    overwrite-existing-jobs: true
+    job-store-type: jdbc
+    properties:
+      org.quartz:
+        scheduler:
+          instanceName: kickstoper
+          instanceId: AUTO
+          instanceIdGenerator.class: org.quartz.simpl.HostnameInstanceIdGenerator
+          skipUpdateCheck: true
+        jobStore:
+          driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+          useProperties: true # specifies that all values in JobDataMaps will be Strings
+          isClustered: true
+
+datasource:
+  quartz.hikari:
+    jdbc-url: jdbc:postgresql://quartz/quartz
+    username: quartz
+    password: quartz
+  db:
+    driver-class-name: org.postgresql.Driver
+    jndi-name: java:/PostgresDS
 
 local:
   files:

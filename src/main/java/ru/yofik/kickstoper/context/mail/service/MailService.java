@@ -27,7 +27,7 @@ public class MailService {
         mailTask.setTitle("New application waits for approve");
         mailTask.setBody("ВИКТОР, ПОЖАЛУЙСТА, ЗААПРУВЬ applicationId: " + application.getId());
         mailTask.setRecipients(Collections.singletonList("megamozg@tune-it.ru"));
-        mailTask = mailTaskRepository.save(mailTask);
+        mailTask = mailTaskRepository.saveAndFlush(mailTask);
 
         kafkaProducerService.sendMessage(
                 APPLICATION_STATUS_TOPIC,
@@ -43,7 +43,7 @@ public class MailService {
         mailTask.setTitle("Your application has been approved");
         mailTask.setBody("ОАОАОАОАОАОАОАО, УРА!!!! ЗААПРУВЛЕНО, СЛИВАЕМ В DEV applicationId: " + application.getId());
         mailTask.setRecipients(Collections.singletonList("junior.pomidor.developer@tune-it.ru"));
-        mailTask = mailTaskRepository.save(mailTask);
+        mailTask = mailTaskRepository.saveAndFlush(mailTask);
 
         kafkaProducerService.sendMessage(
                 APPLICATION_STATUS_TOPIC,
@@ -59,7 +59,7 @@ public class MailService {
         mailTask.setTitle("Your... application... has been... c a n c e l e d");
         mailTask.setBody("о нет(((((((((((((((((((((((((((((((( applicationId: " + application.getId());
         mailTask.setRecipients(Collections.singletonList("junior.pomidor.developer@tune-it.ru"));
-        mailTask = mailTaskRepository.save(mailTask);
+        mailTask = mailTaskRepository.saveAndFlush(mailTask);
 
         kafkaProducerService.sendMessage(
                 APPLICATION_STATUS_TOPIC,
@@ -75,7 +75,7 @@ public class MailService {
         mailTask.setTitle("Возмоооооожно, вам пожертвовали");
         mailTask.setBody("Никто не знает наверняка, но похоже вас решили поддержать projectId: " + project.getId());
         mailTask.setRecipients(Collections.singletonList("junior.pomidor.developer@tune-it.ru"));
-        mailTask = mailTaskRepository.save(mailTask);
+        mailTask = mailTaskRepository.saveAndFlush(mailTask);
 
         kafkaProducerService.sendMessage(
                 APPLICATION_STATUS_TOPIC,
