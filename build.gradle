@@ -23,6 +23,8 @@ dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-security')
 	implementation('org.springframework.boot:spring-boot-starter-web')
 
+	implementation 'org.camunda.bpm:camunda-engine:7.18.0-alpha1'
+
 	implementation("org.springframework.boot:spring-boot-starter-quartz")
 
 	implementation project(':common')
