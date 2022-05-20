@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+}
+
+group 'ru.yofik'
+version '1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // lombok
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    // gson
+    implementation 'com.google.code.gson:gson:2.9.0'
+
+    // camunda
+    implementation 'org.camunda.bpm:camunda-engine:7.17.0'
+    implementation 'org.camunda.bpm:camunda-engine-plugin-spin:7.17.0'
+
+    // logging
+    implementation 'org.apache.logging.log4j:log4j-api:2.17.2'
+    implementation 'org.apache.logging.log4j:log4j-core:2.17.2'
+    implementation 'org.slf4j:slf4j-api:2.0.0-alpha7'
+    implementation 'org.slf4j:slf4j-simple:2.0.0-alpha7'
+
+    // db
+    implementation 'org.postgresql:postgresql:42.3.3'
+}
+
+jar {
+    archiveName "kickstoper-bpms.jar"
+
+    manifest {
+        attributes(
+                'Main-Class': 'ru.yofik.bpms.App'
+        )
+    }
+
+    duplicatesStrategy 'exclude'
+
+    from(
+            configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    )
+}

@@ -2,6 +2,8 @@
 bank/build/
 mailService/build/
 common/build/
+bpms/build/
+
 **/.gradle/
 **/.idea/
 /.gradle/
